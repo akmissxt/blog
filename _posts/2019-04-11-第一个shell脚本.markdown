@@ -1,0 +1,56 @@
+---
+layout: post
+title: 一个shell脚本
+date: 2019-04-11 12:40:00
+description: 一个简陋的根据端口号结束进程的脚本
+---
+最近用vscode调试egg框架项目的时候，调试进程偶尔没有正常退出，一直占着端口号，需要自己手动结束后台进程，于是有了写个shell脚本搭配[shuttle](<https://github.com/fitztrev/shuttle>)来完成这个操作的想法。
+
+
+
+```bash
+#!/bin/bash
+
+#获取键盘输入
+echo "请输入端口号"
+read port
+echo "输入的端口号是$port"
+
+#定义命令
+cmd="lsof -i:$port"
+#执行命令并将输出结果保存到变量
+result=`$cmd`
+
+#切割字符串
+str_arr=($result)
+`$cmd > result`
+
+#提取列
+result=`awk '{print $2}' result`
+echo $result > result
+
+tmp=`cat result`
+#转数组
+tmp=($tmp)
+#截取列名后面的pid
+tmp=${tmp[@]:1}
+echo $tmp > result
+tmp=`cat result`
+tmp=($tmp)
+rm -f result
+for t in ${tmp[@]}
+  do
+    echo $t >> result
+done
+pids=(`sort -u result`)
+# echo ${ports[@]} > result
+for pid in ${pids[@]}
+	do
+		cmd="kill "${pid}
+		echo "结束进程"${pid}
+		$cmd
+	done
+
+```
+
+
