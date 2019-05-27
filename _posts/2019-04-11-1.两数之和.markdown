@@ -1,0 +1,66 @@
+## 1.两数之和
+
+​	给定一个整数数组，如果其中两个元素相加之和等于给定的数字的话，返回这两个元素的下标。
+
+​	可以假定每次输入都会有一组特定的解，并且每个元素不能使用两次。
+
+​	例子：
+
+```
+Given nums = [2, 7, 11, 15], target = 9,
+
+Because nums[0] + nums[1] = 2 + 7 = 9,
+return [0, 1].
+
+```
+
+
+
+#### 解法1:
+
+​	直接遍历，每次遍历将第i位元素与其后的元素组合，寻找解，时间复杂度O(n²)，空间复杂度O(1)。
+
+```javascript
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+var twoSum = function(nums, target) {
+  for (let i = 0; i < nums.length; i++) {
+    for (let j = i + 1; j < nums.length; j++) {
+      if (nums[i] + nums[j] === target) {
+        return [i, j]
+      }
+    }
+  }
+  return [];
+}
+```
+
+### 解法2:
+
+​	反郑人买履，只需要知道尺码多大，就可以直接知道需要那双鞋而不需要试穿每一双。同理，因为仅有一组特定解，所以只要遍历时查看是否已经存在所需的解即可。时间复杂度O(n)，空间复杂度O(n)。
+
+```javascript
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+var twoSum = function(nums, target) {
+  let map = new Map();
+  for (let i = 0; i < nums.length; i++) {
+    let supplement = target - nums[i];
+
+    if (map.has(supplement)) {
+      return [map.get(supplement), i];
+    } else {
+      map.set(nums[i], i);
+      continue;
+    }
+  }
+  return [];
+};
+```
+
