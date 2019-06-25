@@ -1,0 +1,78 @@
+	给定一个32位有符号整数，翻转该整数的数字。
+
+####注意：	
+
+​	假定我们在仅能储存在32位有符号整数范围内（[−231,  231 − 1]）的整数的环境。处于对此问题的考虑，当翻转后整数溢出时你的函数应该返回0。
+
+####例子1：
+```
+Input: 123
+Output: 321
+```
+####例子2:
+```
+Input: -123
+Output: -321
+```
+
+#### 解法1：
+
+​	从个位起利用取余运算取得各位数字，然后倍乘相加得到翻转后的数。
+
+```javascript
+/**
+ * @param {number} x
+ * @return {number}
+ */
+var reverse = function(x) {
+    
+    let positive = x > 0;
+    const MAX = positive ? (2 ** 31) - 1 : 2 ** 31 ;
+    let result = 0;
+    x = positive ? x : -x; //remove sign
+    while (x > 0) {
+        let digit = x % 10;
+        result = result * 10 + digit;
+        x = Math.floor(x / 10);
+    }
+
+    if (result >= MAX) { // overflow
+        return 0;
+    } else {
+        return positive ? result : -result;
+    }
+};
+```
+
+
+
+#### 解法2:
+
+ 	将number转成string，string转array，利用数组的reverse方法翻转后再转换回number获得结果。
+
+```javascript
+/**
+ * @param {number} x
+ * @return {number}
+ */
+var reverse = function(x) {
+    if (x === 0) {
+        return 0;
+    } else {
+        let positive = x > 0;
+
+        let str = x + '';
+        if (!positive) str = str.slice(1); //remove sign
+        str = str.split('').reverse().join(''); //reverse
+        
+        let result = Number(str);
+        const MAX = positive ? 2147483647 : 2147483648;
+        if (result > MAX) { //overflow
+            return 0;
+        } else {
+            return positive ? Number(str) : - Number(str);
+        }
+    }
+};
+```
+
