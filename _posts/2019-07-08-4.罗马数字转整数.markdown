@@ -1,0 +1,80 @@
+罗马数字用七种不同符号表示: I, V, X, L, C, D 和 M。
+
+```
+Symbol       Value
+I             1
+V             5
+X             10
+L             50
+C             100
+D             500
+M             1000
+```
+例如， 罗马数字 2 写做 II ，即为两个并列的 1。12 写做 XII ，即为 X + II 。 27 写做  XXVII, 即为 XX + V + II 。
+
+通常情况下，罗马数字中小的数字在大的数字的右边。但也存在特例，例如 4 不写做 IIII，而是 IV。数字 1 在数字 5 的左边，所表示的数等于大数 5 减小数 1 得到的数值 4 。同样地，数字 9 表示为 IX。这个特殊的规则只适用于以下六种情况：
+
+I 可以放在 V (5) 和 X (10) 的左边，来表示 4 和 9。
+X 可以放在 L (50) 和 C (100) 的左边，来表示 40 和 90。 
+C 可以放在 D (500) 和 M (1000) 的左边，来表示 400 和 900。
+给定一个罗马数字，将其转换成整数。输入确保在 1 到 3999 的范围内。
+####例子1：
+```
+Input: "III"
+Output: 3
+```
+####例子2:
+```
+Input: "IV"
+Output: 4
+```
+####例子3:
+```
+Input: "IX"
+Output: 9
+```
+####例子4:
+```
+Input: "LVIII"
+Output: 58
+Explanation: L = 50, V= 5, III = 3.
+````
+####例子5:
+```
+Input: "MCMXCIV"
+Output: 1994
+Explanation: M = 1000, CM = 900, XC = 90 and IV = 4.
+```
+#### 解法：
+
+​	从高位开始依次把各个符号对应的值相加得到所代表的数，对于4和9的情况，一般是当前位所代表数字比前一位（高位）的大，此时减去二倍于前一位符号所代表数字的值，得到最后结果。
+
+```javascript
+/**
+ * @param {string} s
+ * @return {number}
+ */
+var romanToInt = function(s) {
+    const symbol = {
+        'I': 1,
+        'V': 5,
+        'X': 10,
+        'L': 50,
+        'C': 100,
+        'D': 500,
+        'M': 1000
+    };
+    let result = 0;
+    //遍历字符串
+    for(let i = 0; i < s.length; i++) {
+        let pre = i > 0 ? symbol[s.charAt(i - 1)] : null;
+        let curr = symbol[s.charAt(i)];
+        //判断是否特殊情况
+        if (pre && pre < curr) {
+            result = result - 2 * pre;
+        }
+        result += curr;
+    }
+    return result;
+};
+```
