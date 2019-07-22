@@ -1,0 +1,68 @@
+写一个函数来找出一个字符串数组中最长的通用前缀。如果没有通用前缀，返回空字符串 `""` 。
+
+
+####例子1：
+```
+Input: ["flower","flow","flight"]
+Output: "fl"
+```
+####例子2:
+```
+Input: ["dog","racecar","car"]
+Output: ""
+Explanation: There is no common prefix among the input strings.
+```
+####注意
+所有给定的输入都是小写字母 `a-z` 。
+
+#### 解法1：
+
+从头到尾依次遍历对比，获得通用前缀。时间复杂度O(s)（s是所有字符串加起来的字符总数），空间复杂度O(1)。
+
+```javascript
+/**
+ * @param {string[]} strs
+ * @return {string}
+ */
+var longestCommonPrefix = function(strs) {
+    if (!strs || !strs.length) { // 空数组
+        return '';
+    }
+    let result = strs[0];
+    return strs.reduce((pre, curr) => {
+        let prefix = '';
+        // 逐位对比
+        for(let i = 0; i< curr.length; i++) {
+            if (!pre[i] || curr[i] !== pre[i]) {
+                break;
+            } else {
+                prefix += pre[i];
+            }
+        }
+        return prefix;
+    }, result);
+};
+```
+
+####解法2:
+利用sort函数。sort函数默认会将元素按ASCII码从小到大来排序，排序完成后，只需要对比首位和末尾元素取通用前缀即可。
+```javascript
+/**
+ * @param {string[]} strs
+ * @return {string}
+ */
+var longestCommonPrefix = function(strs) {
+    if (!strs || !strs.length) { // 空数组
+        return '';
+    }
+    strs.sort();
+    let first = strs[0];
+    let last = strs[strs.length - 1];
+    let index = 0;
+    while(index <= first.length && index <= last.length && first.charAt(index) === last.charAt(index)) {
+          index ++;
+    }
+    return first.slice(0, index);
+};
+```
+
