@@ -1,0 +1,78 @@
+给定一个只包含字符 `'('`, `')'`, `'{'`, `'}'`, `'['` 和 `']'` 的字符串，判断输入的字符串是否有效。
+
+这是有效输入的条件：
+
+1. 左括号必须用相同类型的右括号闭合。
+2. 左括号必须用正确的顺序闭合。
+
+注意空字符串同样被认为是有效的。
+
+**例子 1:**
+
+```
+Input: "()"
+Output: true
+```
+
+**例子 2:**
+
+```
+Input: "()[]{}"
+Output: true
+```
+
+**例子 3:**
+
+```
+Input: "(]"
+Output: false
+```
+
+**例子 4:**
+
+```
+Input: "([)]"
+Output: false
+```
+
+**例子 5:**
+
+```
+Input: "{[]}"
+Output: true
+```
+
+
+
+####解法 1:
+
+利用栈先进后出的特性，将左括号压栈，遇到右括号就弹栈对比是否匹配。
+
+```javascript
+/**
+ * @param {string} s
+ * @return {boolean}
+ */
+var isValid = function(s) {
+    const map = {
+        '(': ')',
+        '[': ']',
+        '{': '}',
+    };
+    
+    let left = [];
+    
+    for (let i = 0; i< s.length; i++) {
+        //遇到左括号进栈
+        if (map[s[i]] != null) {
+            left.push(s[i]);
+        } else {
+            //遇到右括号弹栈
+            if (map[left.pop()] !== s[i]) { //左右括号不是对应类型
+                return false;
+            }
+        }
+    }
+    return left.length == 0; //有剩余，左右括号数量不匹配
+};
+```
