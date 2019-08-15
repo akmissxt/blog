@@ -1,0 +1,44 @@
+合并两个有序链表并将其作为新链表返回。新的链表应该通过连接两个链表的节点来生成。
+
+
+####例子：
+```
+Input: 1->2->4, 1->3->4
+Output: 1->1->2->3->4->4
+```
+
+####解法1:
+题目有指明要拼接，所以不能拷贝节点。这里用双指针法遍历，维持三个指针，`curr` 指向新链表当前最后一个节点位置（初始为根节点）， `l1` 和 `l2` 分别指向给定的链表1和链表2的剩余未处理链表的头节点，每次迭代将 `l1` 和 `l2` 中值较小的节点连接到 `curr` 节点后并往后移动一位，最后直至其中至少一个链表处理完，将另一个直接连接到 `curr` 后面。
+```javascript
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+/**
+ * @param {ListNode} l1
+ * @param {ListNode} l2
+ * @return {ListNode}
+ */
+var mergeTwoLists = function(l1, l2) {
+    
+    let root = new ListNode(null);
+    let curr = root;
+    
+    while (l1 && l2) {
+          if (l1.val < l2.val) {
+              curr.next = l1;
+              l1 = l1.next;
+          } else {
+              curr.next = l2;
+              l2 = l2.next;
+          }
+        curr = curr.next;
+    }
+    // 至少其中一条为空，直接连接另外一条剩余部分
+    curr.next = l1 || l2;
+    return root.next;
+};
+```
