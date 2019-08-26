@@ -1,0 +1,49 @@
+前两天看到了个给Mac应用换icon的教程：[快速生成 Mac App icns 图标](<https://www.jianshu.com/p/e74047f7cc91>)，不过教程是针对单个png图片转换的。因为懒得找轮子，所以自己写了个批量转换的脚本。
+
+```shell
+#!/bin/bash
+# get all filename in specified path
+
+path=$1
+
+#校验参数
+if [$1 == ""]
+then
+  echo "请输入png文件所在目录作为参数，取消请按 ctrl+c"
+  read path
+fi
+
+files=$(ls $path)
+for filename in ${files[@]}
+do
+  echo $filename
+  #TODO: 校验格式
+  #TODO: 文件重名问题
+  #取文件名去掉空格
+  iconname=$(echo $filename | awk -F"[.]" '{print $1}' | grep -o "[^ ]\+\( \+[^ ]\+\)*").iconset
+  echo $iconname
+  #新建单个icon的素材目录
+  $(mkdir $path/$iconname)
+
+  #生成各种size的素材
+  $(sips -z 16 16     $path/$filename --out $path/$iconname/icon_16x16.png)
+  $(sips -z 32 32     $path/$filename --out $path/$iconname/icon_16x16@2x.png)
+  $(sips -z 32 32     $path/$filename --out $path/$iconname/icon_32x32.png)
+  $(sips -z 64 64     $path/$filename --out $path/$iconname/icon_32x32@2x.png)
+  $(sips -z 128 128   $path/$filename --out $path/$iconname/icon_128x128.png)
+  $(sips -z 256 256   $path/$filename --out $path/$iconname/icon_128x128@2x.png)
+  $(sips -z 256 256   $path/$filename --out $path/$iconname/icon_256x256.png)
+  $(sips -z 512 512   $path/$filename --out $path/$iconname/icon_256x256@2x.png)
+  $(sips -z 512 512   $path/$filename --out $path/$iconname/icon_512x512.png)
+  $(sips -z 1024 1024   $path/$filename --out $path/$iconname/icon_512x512@2x.png)
+
+  #转换成icns
+  $(mkdir $path/icons)
+  # echo "iconutil -c icns $path/$iconname -o $path/icons/$iconname.icns"
+  $(iconutil -c icns $path/$iconname -o $path/icons/$iconname.icns)
+
+  #清理中间文件
+  $(rm -rf $path/$iconname)
+done
+```
+
