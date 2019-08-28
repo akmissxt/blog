@@ -1,0 +1,64 @@
+给定一个数字数组nums和一个值val，原地移除所有数值与val相等的元素并返回新长度。
+
+不要分配额外的内存空间给另外的数组，你必须通过原地修改输入的数组以O(1)的额外内存完成这件事。
+
+元素的顺序可以被改变。这不会影响那些你留在新长度后面的元素。
+
+**Example 1:**
+
+```
+Given nums = [3,2,2,3], val = 3,
+
+Your function should return length = 2, with the first two elements of nums being 2.
+
+It doesn't matter what you leave beyond the returned length.
+```
+
+**Example 2:**
+
+```
+Given nums = [0,1,2,2,3,0,4,2], val = 2,
+
+Your function should return length = 5, with the first five elements of nums containing 0, 1, 3, 0, and 4.
+
+Note that the order of those five elements can be arbitrary.
+
+It doesn't matter what values are set beyond the returned length.
+```
+
+
+
+#### 解法1:
+
+因为最终要返回新数组的长度，而新长度后面的元素不会影响结果，所以可以把需要移除的元素交换到数组的末尾，然后返回前面一段（非目标元素）的长度，避免增删数组元素。双指针解法：
+
+```javascript
+/**
+ * @param {number[]} nums
+ * @param {number} val
+ * @return {number}
+ */
+var removeElement = function(nums, val) {
+    if (!nums.length) return 0;
+        
+    let forward = 0;
+    let backward = nums.length - 1;
+    while(true) {
+      while(nums[forward] != val) {
+        if (forward == backward) return forward + 1;
+        forward ++;
+      }
+       
+      while(nums[backward] == val) {
+        if (forward == backward) return backward;
+        backward --;
+      }
+      nums[forward] = nums[backward];
+      nums[backward] = val;
+      if (forward + 1 >= backward) break;
+
+    }
+    return forward + 1;
+};
+```
+
