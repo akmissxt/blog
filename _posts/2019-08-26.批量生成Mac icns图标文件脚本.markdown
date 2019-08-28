@@ -2,26 +2,46 @@
 
 ```shell
 #!/bin/bash
-# get all filename in specified path
 
 path=$1
-
-#校验参数
-if [$1 == ""]
+#检查是否输入了参数
+if [ "$1" == "" ];
 then
   echo "请输入png文件所在目录作为参数，取消请按 ctrl+c"
   read path
+fi
+
+#校验参数
+if [ ! -d $path ];
+then
+  echo "请将所有png文件放在单独的文件夹目录下，并将文件夹路径作为参数"
+  exit
+fi
+
+#目标输出文件夹
+if [ ! -d "$path/icons" ]
+  then $(mkdir $path/icons)
 fi
 
 files=$(ls $path)
 for filename in ${files[@]}
 do
   echo $filename
-  #TODO: 校验格式
+  #校验格式，忽略非png文件
+  if [ ${filename: -4} != '.png' ]
+    then continue
+  fi
+
   #TODO: 文件重名问题
+
   #取文件名去掉空格
   iconname=$(echo $filename | awk -F"[.]" '{print $1}' | grep -o "[^ ]\+\( \+[^ ]\+\)*").iconset
   echo $iconname
+  #如果文件夹已经存在，忽略，防止最后清理文件误删
+  if [ -d $path/$iconname ]
+    then continue
+  fi
+
   #新建单个icon的素材目录
   $(mkdir $path/$iconname)
 
@@ -38,7 +58,6 @@ do
   $(sips -z 1024 1024   $path/$filename --out $path/$iconname/icon_512x512@2x.png)
 
   #转换成icns
-  $(mkdir $path/icons)
   # echo "iconutil -c icns $path/$iconname -o $path/icons/$iconname.icns"
   $(iconutil -c icns $path/$iconname -o $path/icons/$iconname.icns)
 
