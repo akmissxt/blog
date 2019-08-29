@@ -1,0 +1,53 @@
+实现 strStr()函数。
+
+返回needle第一次出现在haystack的下标index，或者-1如果needle没有出现在haystack中。
+
+**例子 1:**
+
+```
+Input: haystack = "hello", needle = "ll"
+Output: 2
+```
+
+**例子 2:**
+
+```
+Input: haystack = "aaaaa", needle = "bba"
+Output: -1
+```
+
+
+
+#### 解法1:
+
+字符串匹配问题，利用sunday算法，每次失配时对比此轮匹配过后的下一位 `i + needle.length` 是否在模式串中出现，有则将该位与该位在模式串中最后出现的位置对齐（其实就是移动最小位置使主串和模式串能重合），否则移动 `needle.length + 1`  位，直至匹配或遍历完毕。
+
+```javascript
+/**
+ * @param {string} haystack
+ * @param {string} needle
+ * @return {number}
+ */
+var strStr = function(haystack, needle) {
+    if (!needle) return 0;
+    let i = 0;
+    let j = 0;
+    let map = {};
+    // 替代lastIndexOf
+    for (let idx = 0; idx < needle.length; idx++) {
+      map[needle.charAt(idx)] = idx;
+    }
+    while (i + needle.length <= haystack.length) {
+      if (haystack.charAt(i + j) == needle.charAt(j)) {
+        if (j == needle.length - 1) return i;
+        j ++;
+      } else {
+        let index = map[haystack.charAt(i + needle.length)];
+        i += index == null ? (needle.length + 1) : (needle.length - index);
+        j = 0;
+      }
+    }
+    return -1;
+};
+```
+
