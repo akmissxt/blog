@@ -1,0 +1,69 @@
+给定一个有序数组和一个目标值，当找到目标值时返回其下标。否则，返回目标值按顺序插入数组时的下标。
+
+你可以假定数组没有重复元素。
+
+**Example 1:**
+
+```
+Input: [1,3,5,6], 5
+Output: 2
+```
+
+**Example 2:**
+
+```
+Input: [1,3,5,6], 2
+Output: 1
+```
+
+**Example 3:**
+
+```
+Input: [1,3,5,6], 7
+Output: 4
+```
+
+**Example 4:**
+
+```
+Input: [1,3,5,6], 0
+Output: 0
+```
+
+
+
+#### 解法1:
+
+题目没有说明数组是正序抑或者是倒序，但是跑了几个测试用例发现输出都是倒序，所有此处忽略数组倒序排列的情况。利用二分法，值得注意的是计算mid的时候为了防止溢出，用 `max - (max - min) / 2` 代替 `(max + min) /2` 。代码实现：
+
+```javascript
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number}
+ */
+var searchInsert = function(nums, target) {
+    // empty array
+    if (!nums.length) return 0;
+    let min = 0;
+    let max = nums.length - 1;
+
+    while (min <= max) {
+        
+        if (target <= nums[min]) {
+            return min;
+        } 
+        if (target > nums[max]) {
+            return ++max;           
+        } 
+        // 防止(max + min)溢出
+        let mid = parseInt(max - (max - min) / 2);
+        if (target <= nums[mid]) {
+            max = mid - 1;
+        } else {
+            min = mid + 1;
+        }
+    }
+};
+```
+
