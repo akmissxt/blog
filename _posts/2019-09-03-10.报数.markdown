@@ -1,0 +1,67 @@
+报数序列是一个整数序列，前五项如下：
+
+```
+1.     1
+2.     11
+3.     21
+4.     1211
+5.     111221
+```
+
+`1` 被读作 `"一个1"` 或者 `11`。
+`11` 被读作 `"两个1"` 或者 `21`。
+`21` 被读作 `"一个2`, 然后 `一个1"` 或 `1211`。
+
+给定一个满足1 ≤ *n* ≤ 30 的整数 n ，生成报数序列的第 n 项。
+
+注意： 报数序列的每一项会以字符串来表示。
+
+**Example 1:**
+
+```
+Input: 1
+Output: "1"
+```
+
+**Example 2:**
+
+```
+Input: 4
+Output: "1211"
+```
+
+
+
+#### 解法1:
+
+根据题意，序列的第 n 项是由第 n-1 项的字符串报数得到。如：第四项 `1211` 是由第三项 `21`  的报数 `1(个)2 1(个)1` 得到。
+
+递归解法：
+
+```javascript
+/**
+ * @param {number} n
+ * @return {string}
+ */
+var countAndSay = function(n) {
+    
+    getNext = str => {
+        str = str.split('');
+        let count = 0;
+        let result = '';
+        for (let idx in str) {
+            if (str[idx] == str[idx-1] || idx == 0) {
+                count++;
+            } else {
+                result += (count + str[idx-1]);
+                count = 1;
+                str[idx-1] = null;
+            }
+            if (idx == str.length - 1) result += (count + str[idx]);
+        }
+        return result;
+    }
+    return n == 1 ? '1' : getNext(countAndSay(n - 1));
+};
+```
+
