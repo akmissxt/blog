@@ -65,3 +65,34 @@ var countAndSay = function(n) {
 };
 ```
 
+#### 解法2:
+
+迭代解法：
+
+```javascript
+/**
+ * @param {number} n
+ * @return {string}
+ */
+var countAndSay = function(n) {
+
+    let result = '1'; 
+    let lastIdx = -1; 
+    
+    for (let i = 1; i < n; i ++) {
+        result = result.split('').reduce((pre, curr, idx, arr) => {
+            if (arr[idx] != arr[idx + 1]) {
+                let str = pre + (idx - lastIdx) + arr[idx];
+                lastIdx = idx;
+                return str;
+            }
+            return pre;
+        }, '');
+
+        lastIdx = -1;
+    }
+    
+    return result;
+};
+```
+
