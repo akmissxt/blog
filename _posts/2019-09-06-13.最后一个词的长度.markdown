@@ -1,0 +1,38 @@
+给定一个由大小写字母和空格字符 `' '`组成的字符串，返回字符串最后一个单词的长度。
+
+如果最后一个单词不存在，则返回0。
+
+**注意:** 一个单词是指由非空字符组成的字符序列。
+
+**Example:**
+
+```
+Input: "Hello World"
+Output: 5
+```
+
+
+
+#### 解法1：
+
+直接从字符串末尾开始遍历，找到第一个非空字符开始计数，到下一个空字符或字符串开头结束。迭代解法：
+
+```javascript
+/**
+ * @param {string} s
+ * @return {number}
+ */
+var lengthOfLastWord = function(s) {
+    let len = 0;
+    for (let i = s.length - 1; i >= 0; i--) { 
+        if (s.charAt(i) == ' ') {
+            // for ending with space
+            if (i == s.length - 1 || s.charAt(i + 1) == ' ') continue;
+            break;
+        }
+        len++;
+    }
+    return len;
+};
+```
+
