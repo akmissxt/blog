@@ -41,3 +41,41 @@ var maxSubArray = function(nums) {
 };
 ```
 
+
+
+#### 解法2:
+
+分治法。在数组中任取一点作为基点（为了提高效率，一般取中点），那么所求解有三种情况：存在于基点左边的子数组中、存在于基点右边的子数组中和存在于横跨基点(以基点为基础向左右两边取最大)左右两边的子数组中。递归解法：
+
+```javascript
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var maxSubArray = function(nums) { 
+    function findMax(arr, low, base, high) {
+        let lMax = arr[base];
+        let rMax = arr[base + 1];
+        for (let i = base, sum = 0; i >= low; i--) {
+          sum += arr[i];
+          if (sum > lMax) lMax = sum;
+        }
+        for (let i = base + 1, sum = 0; i <= high; i++) {
+          sum += arr[i];
+          if (sum > rMax) rMax = sum;
+        }
+        return lMax + rMax;
+    }
+    
+    function findSubMax(arr, begin, end) { 
+        if (begin == end) return arr[begin];
+        let mid = parseInt(end - (end - begin) / 2);
+        let leftSum = findSubMax(arr, begin, mid);
+        let rightSum = findSubMax(arr, mid + 1, end);
+        let midSum = findMax(arr, begin, mid, end);
+        return Math.max(leftSum, rightSum, midSum);
+    }
+    return findSubMax(nums, 0, nums.length - 1);
+};
+```
+
