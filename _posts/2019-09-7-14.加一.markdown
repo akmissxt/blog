@@ -1,0 +1,46 @@
+给定一个非空数字数组所表示的非负数，将这个数加一。
+
+数字经过排序以便最高位位于数组开头，数组中每个元素只包含一个数字。
+
+你可以假设这个数除了 0 以外，不会有其它数以零开头。
+
+**Example 1:**
+
+```
+Input: [1,2,3]
+Output: [1,2,4]
+Explanation: The array represents the integer 123.
+```
+
+**Example 2:**
+
+```
+Input: [4,3,2,1]
+Output: [4,3,2,2]
+Explanation: The array represents the integer 4321.
+```
+
+
+
+#### 解法1:
+
+根据题意，只要将数组末尾的数加一，然后考虑进位（一次、多次和最高位进位）的情况即可。
+
+```javascript
+/**
+ * @param {number[]} digits
+ * @return {number[]}
+ */
+var plusOne = function(digits) {
+    const NOTATION = 10;
+    for (let i = digits.length - 1; i >= 0; i--) {
+        digits[i]++;
+        // no carry, break and return
+        if (digits[i] < NOTATION) break;
+        digits[i] = 0; 
+        if (i == 0) digits.unshift(1);
+    }
+    return digits;
+};
+```
+
