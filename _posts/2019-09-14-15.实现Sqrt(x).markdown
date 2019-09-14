@@ -1,0 +1,55 @@
+实现 `int sqrt(int x)` 。
+
+计算并返回 x 的平方根， x 保证是一个非负的整数类型。
+
+由于返回类型是一个整型数字，所以小数部分会被截去，只有整数部分会被返回。
+
+**Example 1:**
+
+```
+Input: 4
+Output: 2
+```
+
+**Example 2:**
+
+```
+Input: 8
+Output: 2
+Explanation: The square root of 8 is 2.82842..., and since 
+             the decimal part is truncated, 2 is returned.
+```
+
+
+
+#### 解法1：
+
+利用二分法迭代求解：
+
+```javascript
+/**
+ * @param {number} x
+ * @return {number}
+ */
+var mySqrt = function(x) {
+    //定上限和下限
+    let floor = 0;
+    let ceiling = x;
+    // let round = 0;
+    //确定结束条件 上限和下限的整数部分相等即结束迭代
+    while(parseInt(floor) !== parseInt(ceiling)) {
+        // console.log('round', ++ round);
+        let mid = ceiling - (ceiling - floor) / 2;
+        if (mid * mid <= x) {
+            floor = mid;
+        } 
+        if (mid * mid >= x) {
+            ceiling = mid;
+        }
+    }
+    return parseInt(floor);
+};
+```
+
+
+
