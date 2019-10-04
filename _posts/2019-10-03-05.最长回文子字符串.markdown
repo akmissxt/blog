@@ -17,7 +17,7 @@ Output: "bb"
 
 #### 解法1:
 
-利用马拉车算法，先对字符串 **s** 进行预处理，首尾分别插入两个不相等且不会出现在 **s** 的字符（简化遍历结束的条件），在 **s** 中的每两个字符之间插入一个相同且不会在 **s** 中出现的字符（这里插入 `#` ）使字符串变为奇数长度，解决奇偶长度的问题。然后，定义曾经遍历过的最靠右（最靠末尾）的字符的下标 `maxRight` 和其相对应的对称轴的字符下标 `pos` ,这样以来，当当前遍历的字符下标 `i` 小于 `maxRight` 时候，可以根据回文的对称性，跳过以下标 `i` 以 `pos` 为对称轴对应的位置的回文长度（或者超出 `maxRight` 的话，直接从`maxRight` 开始），因此还要记录下每个位置对应的最长回文字符串长度 `pos`。
+利用马拉车算法，先对字符串 **s** 进行预处理，在 **s** 的首尾和每两个字符之间插入一个相同且不会在 **s** 中出现的字符（这里插入 `#` ）使字符串变为奇数长度，解决奇偶长度的问题。然后，定义曾经遍历过的最靠右（最靠末尾）的字符的下标 `maxRight` 和其相对应的对称轴的字符下标 `pos` ,这样以来，当当前遍历的字符下标 `i` 小于 `maxRight` 时候，可以根据回文的对称性，跳过以下标 `i` 以 `pos` 为对称轴对应的位置的回文长度（或者超出 `maxRight` 的话，直接从`maxRight` 开始），因此还要记录下每个位置对应的最长回文字符串长度 `pos`。
 
 ```javascript
 /**
@@ -27,17 +27,17 @@ Output: "bb"
 var longestPalindrome = function(s) {
     if (!s) return '';
     //预处理
-    let str = '>' + s.split('').join('#') + '<';
+    let str = '#' + s.split('').join('#') + '#';
     let maxRight = 0;
     let pos = 0;
     let dis = []; // distance form 'pos' to 'maxRight'
-    let res = '';
+    // let res = '';
     for (let i = 0; i < str.length; i ++) {
         //根据当前i位置设置跳过的长度
         let len = i < maxRight 
             ? Math.min(dis[pos + pos - i], maxRight - i) 
             : 0;
-        while(str.charAt(i - len) == str.charAt(i + len)) {
+        while(str.charAt(i - len) == str.charAt(i + len) && i - len >= 0 && i + len < str.length) {
             len ++;
         }
         dis[i] = len - 1;
@@ -46,11 +46,18 @@ var longestPalindrome = function(s) {
             pos = i;
         }
         
-        //判断最长字符串
-        let subString = str.substring(i - dis[i], i + dis[i] + 1).replace(/[#<>]/g, '');
-        if (subString.length > res.length) res = subString;
     }
+    
+    //找出最长长度和对应的对称轴下标
+    let { axis, maxLen } = dis.reduce((prev, curr, idx) => {
+        return curr > prev.maxLen ? { axis: idx, maxLen: curr } : prev;
+    }, { axis: dis[0], maxLen: 0});
+
+    let res = str.substring(axis - maxLen, axis + maxLen + 1).replace(/#/g, '');
     return res;
 };
+
+
+
 ```
 
