@@ -1,0 +1,74 @@
+给定两个二进制字符串 `a` 和 `b` ，以*二进制字符串形式返回它们的和*。
+
+ 
+
+**例子 1:**
+
+```
+Input: a = "11", b = "1"
+Output: "100"
+```
+
+**例子 2:**
+
+```
+Input: a = "1010", b = "1011"
+Output: "10101"
+```
+
+ 
+
+**条件约束:**
+
+- `1 <= a.length, b.length <= 104`
+- `a` 和 `b` 只会由 `'0'` 或 `'1'`两种字符组成.
+- 除了 0 本身，其他字符串不会以 0 打头.
+
+
+
+**测试用例**
+|输入|预期输出|
+|-----|-----|
+| ["0", "0"] | "0" |
+| ["0", "1"] | "1" |
+| ["1", "1"] | "10" |
+| ["1", "11"] | "100" |
+| ["111", "1"] | "1000" |
+|["100", "11"]|"111"|
+
+**代码**
+
+``` javascript
+/**
+ * @param {string} a
+ * @param {string} b
+ * @return {string}
+ */
+var addBinary = function(a, b) {
+    const BIN = 2;
+    const count = Math.max(a.length, b.length);
+    
+    let flag = 0; // 进位符
+    let res = ''; // 结果
+    
+    for (let i = 1; i <= count; i++) {
+        
+        // 有可能其中一个越界，Number 处理后可以忽略
+        const currA = Number(a.charAt(a.length - i));
+        const currB = Number(b.charAt(b.length - i));
+        
+        let currSum =  currA + currB + flag;
+        
+        if (currSum >= BIN) {
+            flag = 1;
+            currSum = currSum - BIN;
+        } else {
+            flag = 0;
+        }
+        
+        res = currSum + res;
+    }
+    
+    return flag ? flag + res : res;
+};
+```
