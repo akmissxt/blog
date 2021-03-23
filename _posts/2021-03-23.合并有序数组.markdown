@@ -1,0 +1,36 @@
+Given two sorted integer arrays `nums1` and `nums2`, merge `nums2` into `nums1` as one sorted array.
+
+The number of elements initialized in `nums1` and `nums2` are `m` and `n` respectively. You may assume that `nums1` has a size equal to `m + n` such that it has enough space to hold additional elements from `nums2`.
+
+给定两个排好序的整数数组`nums1` 和 `nums2`,将`nums2` 合并到 `nums1` 得到一个有序的数组。
+
+`nums1` 和 `nums2` 的初始长度用 `m` and `n` 表示。你可以认为 `nums1` 的大小等于 `m + n` ，以便它有足够的空间存得下来自 `num2` 的元素。
+
+**Example 1:**
+
+```
+Input: nums1 = [1,2,3,0,0,0], m = 3, nums2 = [2,5,6], n = 3
+Output: [1,2,2,3,5,6]
+```
+
+**Example 2:**
+
+```
+Input: nums1 = [1], m = 1, nums2 = [], n = 0
+Output: [1]
+```
+
+ 
+
+**约束条件:**
+
+- `nums1.length == m + n`
+- `nums2.length == n`
+- `0 <= m, n <= 200`
+- `1 <= m + n <= 200`
+- `-109 <= nums1[i], nums2[i] <= 109`
+
+
+
+** 题解 **
+因为 `nums1` 的长度是 `m + n` ，初始状态的第 `m + 1` 位是预留的插槽位，但是插入过程中，这个插槽位会不停变化，因此要存储当前已经插入的元素个数来动态计算下一个插槽位。
