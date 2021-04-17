@@ -114,6 +114,7 @@ HTTPS 是 HTTP 的安全版本，通过加入 SSL/TCL 传输层安全协议，�
 
 #### 什么是视图，游标是什么
 视图：一种具有和物理表一样功能的虚拟表,由预设的查询语句定义好，使用时实时查询。视图通常是有一个表或者多个表的行或列的子集，对视图的修改会影响基本表，但是只有视图与表是一对一关系情况（还有其他条件，比如用了 `LIMIT` 就改不了）才能修改。
+
 ```SQL
 -- 人物表
 CREATE TABLE person (
@@ -160,4 +161,24 @@ SELECT id, name FROM person WHERE id = 1
 
 游标：一种能从包含多条结果集中提取其中一条进行处理的机制。
 
+#### 什么是存储过程，用什么来调用
+**存储过程**是一个预编译的 SQL 语句，优点是允许模块化的设计，就是说只需创建一次，以后在该程序中就可以调用多次。
+可以直接通过 `CALL` 关键字调用。
+参数有 `IN`、 `OUT` 和 `INOUT` 三种，默认为 `IN`;
+- IN：调用时指定，修改该参数的值不能被返回
+- OUT：在存储过程内部被改变，并可返回，即该参数只是用来接收结果
+- INOUT：调用时指定，并且可被改变和返回
+
+```SQL
+-- 先把把 // 定义为执行语法,CLI 中执行需要用到，不然会尝试执行定义函数里面的语句
+DELIMITER // 
+CREATE PROCEDURE showPersonById(targetId int) 
+BEGIN 
+	SELECT * FROM person WHERE id = targetId;
+END
+-- 还原执行符
+DELIMITER ;
+-- 调用
+CALL showPersonById(1);
+```
 ## 其他
