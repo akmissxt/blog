@@ -236,6 +236,8 @@ undo log 属于逻辑日志，执行undo的时候，仅仅是将数据从逻辑�
 
 ### 索引
 
+ref: [MySQL常见面试题索引、表设计](https://www.cnblogs.com/open-yang/p/11417686.html)
+
 #### 查看索引
 ```sql
 SHOW INDEX FROM tableA;
