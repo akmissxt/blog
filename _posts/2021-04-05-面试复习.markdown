@@ -336,4 +336,13 @@ WHERE c1 > const GROUP BY c1, c2, c3;
 由于这个等效性，适用于 `GROUP BY` 查询的优化也可以被应用于有 `DISTINCT` 子句的查询。
 所以改写成 `GROUP BY` 形式再优化。
 
+#### 通用的 SQL 函数
+SQL 的标准内置函数，不同的方言数据库基本都支持的。
+常用的有：
+1. 算术类：ABS()、MOD()、ROUND() 等。
+2. 字符串类：CONCAT()、LENGTH()、LOWER()、UPPER() 等。
+3. 日期类：CURRENT_DATE()、CURRENT_TIME()、CURRENT_TIMESTAMP() 等。
+4. 转换类：CAST() 等
+
+
 ## 其他
