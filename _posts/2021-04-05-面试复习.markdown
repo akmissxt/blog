@@ -294,5 +294,32 @@ MySQL 的索引查询会遵循最左匹配原则，即最左优先，在检索�
 5. 优化查询语句，如：避免在 `WHERE` 子句中使用 `!=`；使用 `LIKE` 关键字最好固定左边以免索引失效；使用默认值代替 `NULL`，否则使用时 `IS NULL` 或者 `IS NOT NULL` 可能会全表扫描。
 6. 限制索引数量，避免避免增加更新/插入时的系统开销。
 
+#### CHAR 和 VARCHAR 的区别
+1. char 的长度固定，而 varchar 的长度是不固定的，所以 char 的会占用更多空间，但是读取速度更快。
+2. char 在取值的时候会把存值后面的空格去除掉，varchar 如果后面有空格则会保留；
+3. 存储方式不一样，不同字符集的字符占用字节不一样。
+
+#### 怎么找出最后一次插入时分配了哪个自动增量？
+变量 `LAST_INSERT_ID` 将返回由 `auto_increment` 分配的最后一个值，并且不需要指定表名称。
+> SHOW VARIABLES LIKE 'LAST_INSERT_ID';
+
+#### BLOL 和 TEXT 有什么区别
+`TEXT` 与 `BLOB` 的主要差别就是 `BLOB` 保存二进制数据，`TEXT` 保存字符数据，因此 `BLOB` 区分大小写，而 `TEXT` 不区分大小写。
+
+```SQL
+-- 建表
+CREATE TABLE `person` (
+  `id` int NOT NULL,
+  `bl` blob,
+  `te` text
+)
+-- 初始化数据
+INSERT INTO person (id, bl, te) VALUES (1, 'abc', 'abc');
+-- 查询
+SELECT * FROM person WHERE bl = 'abc'; -- 1
+SELECT * FROM person WHERE bl = 'ABC'; -- 0
+SELECT * FROM person WHERE te = 'abc'; -- 1
+SELECT * FROM person WHERE te = 'ABC'; -- 1
+```
 
 ## 其他
