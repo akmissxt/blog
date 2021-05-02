@@ -322,4 +322,18 @@ SELECT * FROM person WHERE te = 'abc'; -- 1
 SELECT * FROM person WHERE te = 'ABC'; -- 1
 ```
 
+#### MySQL 怎么优化 DISTINCT？
+ref: [DISTINCT Optimization](https://dev.mysql.com/doc/refman/8.0/en/distinct-optimization.html)
+
+在大多数情况下，DISTINCT子句可以视为GROUP BY的特殊情况。例如，下面的两个查询是等效的：
+```SQL
+SELECT DISTINCT c1, c2, c3 FROM t1
+WHERE c1 > const;
+
+SELECT c1, c2, c3 FROM t1
+WHERE c1 > const GROUP BY c1, c2, c3;
+```
+由于这个等效性，适用于 `GROUP BY` 查询的优化也可以被应用于有 `DISTINCT` 子句的查询。
+所以改写成 `GROUP BY` 形式再优化。
+
 ## 其他
