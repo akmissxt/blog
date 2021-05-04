@@ -344,5 +344,14 @@ SQL 的标准内置函数，不同的方言数据库基本都支持的。
 3. 日期类：CURRENT_DATE()、CURRENT_TIME()、CURRENT_TIMESTAMP() 等。
 4. 转换类：CAST() 等
 
+#### MySQL 有关权限的表有哪些
+ref: [MySQL 用户权限管理](https://www.cnblogs.com/keme/p/10288168.html)
+
+1. mysql.user 表：记录允许连接到服务器的用户帐号信息，里面的权限是全局级的。
+2. mysql.db 表：存放数据库级别的权限，记录哪些主机的哪些用户各个数据库上的操作权限。
+3. mysql.tables_priv 表：存放表级别的权限，决定了来自哪些主机的哪些用户可以访问数据库的这个表。
+4. mysql.columns_priv 表：存放列级别的权限，决定了来自哪些主机的哪些用户可以访问数据库表的这个字段
+5. mysql.procs_priv 表：存放存储过程和函数级别的权限。
+
 
 ## 其他
