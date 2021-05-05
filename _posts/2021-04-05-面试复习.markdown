@@ -363,5 +363,12 @@ ref: [美团针对Redis Rehash机制的探索和实践](https://tech.meituan.com
 Hash 冲突（负载因子）超过某个阈值时，出于链表性能的考虑，会进行 Resize 的操作。
 Redis 使用了渐进式 rehash 机制，避免 rehash 对服务器性能造成影响，渐进式 rehash 的好处在于它采取分而治之的方式， 将 rehash 键值对所需的计算工作均摊到对字典的每个添加、删除、查找和更新操作上， 从而避免了集中式 rehash 而带来的庞大计算量。
 
+#### Redis 的持久化方式
+ref: [Redis 持久化](https://www.redis.com.cn/redis-persistence.html)
+
+Redis 提供了两种持久化的方式，分别是 RDB（Redis DataBase）和 AOF（Append Only File）。
+RDB：将 Redis 某一时刻的数据持久化到磁盘中，是一种快照式的持久化方法。
+AOF：将 Redis 执行过的所有写指令记录下来，在下次 Redis 重新启动时，只要把这些写指令从前到后再重复执行一遍，就可以实现数据恢复了
+
 
 ## 其他
