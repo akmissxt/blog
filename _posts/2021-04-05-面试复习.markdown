@@ -112,4 +112,94 @@ HTTPS 是 HTTP 的安全版本，通过加入 SSL/TCL 传输层安全协议，�
 4. 锁粗化：避免频繁加锁解锁，提高性能。
 5. 锁消除：避免不必要的锁。
 
+#### 什么是视图，游标是什么
+视图：一种具有和物理表一样功能的虚拟表,由预设的查询语句定义好，使用时实时查询。视图通常是有一个表或者多个表的行或列的子集，对视图的修改会影响基本表，但是只有视图与表是一对一关系情况（还有其他条件，比如用了 `LIMIT` 就改不了）才能修改。
+
+```SQL
+-- 人物表
+CREATE TABLE person (
+id int4 NOT NULL PRIMARY KEY,
+name varchar(32) NOT NULL
+);
+-- 初始化任务表数据
+INSERT INTO person values(1, 'tom');
+INSERT INTO person values(2, 'tony');
+-- 食物表
+CREATE TABLE food (
+fid int4 NOT NULL PRIMARY KEY,
+uid int4 NOT NULL,
+name varchar(32) NOT NULL
+);
+-- 初始化食物表数据
+INSERT INTO food values(1, 2, 'coffee');
+INSERT INTO food values(2, 2, 'bread');
+INSERT INTO food values(3, 1, 'honey');
+
+
+-- 定义视图（不可修改）
+DROP VIEW IF EXISTS `vuf` ;
+CREATE ALGORITHM = UNDEFINED 
+DEFINER = `root`@`localhost` 
+SQL SECURITY DEFINER 
+VIEW `vuf` AS (
+SELECT f.uid, p.name, f.name AS favorite_food FROM 
+food AS f
+LEFT JOIN 
+person AS p ON p.id = f.uid
+ORDER BY f.uid ASC
+);
+
+-- 定义视图（可修改），但是在查询条件加上 LIMIT 的话也会禁止修改
+DROP VIEW IF EXISTS `vu` ;
+CREATE ALGORITHM = UNDEFINED 
+DEFINER = `root`@`localhost` 
+SQL SECURITY DEFINER 
+VIEW `vuu` AS (
+SELECT id, name FROM person WHERE id = 1
+);
+```
+
+游标：一种能从包含多条结果集中提取其中一条进行处理的机制。
+
+#### 什么是存储过程，用什么来调用
+**存储过程**是一个预编译的 SQL 语句，优点是允许模块化的设计，就是说只需创建一次，以后在该程序中就可以调用多次。
+可以直接通过 `CALL` 关键字调用。
+参数有 `IN`、 `OUT` 和 `INOUT` 三种，默认为 `IN`;
+- IN：调用时指定，修改该参数的值不能被返回
+- OUT：在存储过程内部被改变，并可返回，即该参数只是用来接收结果
+- INOUT：调用时指定，并且可被改变和返回
+
+```SQL
+-- 先把把 // 定义为执行语法,CLI 中执行需要用到，不然会尝试执行定义函数里面的语句
+DELIMITER // 
+CREATE PROCEDURE showPersonById(targetId int) 
+BEGIN 
+	SELECT * FROM person WHERE id = targetId;
+END
+-- 还原执行符
+DELIMITER ;
+-- 调用
+CALL showPersonById(1);
+```
+
+#### 视图和基本表的区别与联系
+区别：
+1. 视图是编译好的 SQL 语句，而基本表是实际的物理数据。
+2. 基本表是内容，而视图是筛选器。
+3. 表是内模式，视图是外模式。
+4. 表属于全局模式中的表，是实表；视图属于局部模式的表，是虚表，不会暴露真实的表结构。
+5. 视图的建立和删除只影响视图本身（指的是整个 VIEW，而不是单独的记录），不影响对应的基本表。 
+
+联系：视图是基于一个或多个基本表而建立的虚拟表，它的结构来自于定义，内容来自于基本表，是基本表在逻辑意义上建立的新关系。
+
+#### 视图的优缺点
+优点：
+1. 简单，定义好以后可以多次调用。
+2. 安全，不会暴露真实的表结构。
+3. 独立，对于视图（整体而不是单条记录记录）的删除和创建不会影响基本表。
+
+缺点：
+1. 性能不好，简单的查询也会变得稍显复杂。
+2. 修改不方便，复杂的聚合视图基本无法修改。
+
 ## 其他
