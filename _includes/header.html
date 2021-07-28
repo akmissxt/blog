@@ -9,11 +9,16 @@
         <a class="page-link" href="{{ site.baseurl }}/">blog</a>
 
         {% for page in site.pages %}
-          {% if page.title %}
+          {% if page.title and page.title != 'about' %}
           <a class="page-link" href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a>
           {% endif %}
         {% endfor %}
-
+        <!-- 将 about 放在最后 -->
+        {% for page in site.pages %}
+          {% if page.title and page.title == 'about' %}
+          <a class="page-link" href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a>
+          {% endif %}
+        {% endfor %}
       </div>
     </nav>
 
