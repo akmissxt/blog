@@ -85,12 +85,15 @@ TCP 之所以会出现粘包问题是因为它本身是面向连接的字节流�
 解决方案一般有固定消息长度、设置标识符、在消息头指明消息长度。
 
 #### TCP 校验和
-ref: [rfc1071](https://datatracker.ietf.org/doc/html/rfc1071)
+ref: 
+  [TRANSMISSION CONTROL PROTOCOL](https://www.rfc-editor.org/rfc/rfc793.html)
+  [Computing the Internet Checksum](https://www.rfc-editor.org/rfc/rfc1071.html)
 
 校验和的计算：
-1. 把校验和初始化为 0。
-2. 把要校验的数据（还要构造 12 字节的 IP 伪首部）相邻八位字节配对形成 16 位整数。
-3. 把第二步中得到的多个 16 位数循环进位相加，然后取和的补码得到校验和。
+1. 把校验和初始化为 0，即头部的 `Checksum` 置为 `00000000` 来加入下面的计算中。
+2. 把要校验的数据（还要构造 12 字节的 IP 伪首部）相邻八位字节配对形成 16 位整数，不足的位用 0 补齐。
+3. 把第二步中得到的多个 16 位数循环进位相加，然后取和的反码得到校验和放入 `Checksum` 传输给接收方。
+4. 接收方校验时，和发送方一样进行 16 位循环进位加法，但是 `Checksum` 直接用接收到的 `Checksum` 而不是置为 0 加入计算，如果得到结果全部位都是 **1**（即结果是 **-0**），则校验成功。
 
 #### TCP 报文长度
 这个跟具体传输网络有关，以太网的 MTU 为 1500 字节，Internet 的 MTU 为 576 字节。
