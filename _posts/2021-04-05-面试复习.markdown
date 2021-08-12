@@ -116,6 +116,51 @@ MTU是网络层的传输单元，那么 MSS = MTU - 20字节（IP首部） - 20�
 2. 应用进程指明要求发送报文段，即 TCP 支持的 PUSH 操作。
 3. 发送方的计时器时限到了，这时也会把当前缓存的数据组装成报文发送出去。
 
+#### TCP 拥塞控制
+ref: [TCP Congestion Control](https://www.rfc-editor.org/rfc/inline-errata/rfc2581.html)
+
+拥塞控制用到的算法包括慢开始（slow-start）、拥塞避免（congestion avoidance）、快重传（fast retransmit）、快恢复（fast revocery）。
+发送方维持**拥塞窗口**（cwnd）的变量，根据网络拥塞程度动态调整该变量，并使**发送窗口**不大于该窗口大小（因为还要受接收方的通知窗口大小限制）来实现拥塞控制。
+
+- 慢开始和拥塞避免
+> During slow start, a TCP increments cwnd by at most SMSS bytes for each ACK received that acknowledges new data.  Slow start ends when cwnd exceeds ssthresh (or, optionally, when it reaches it, as noted above) or when congestion is observed.
+
+在慢开始阶段，**每接收到一个对新报文段的确认**后，把 cwnd 至多增大一个 SMSS 的数值。直到达到慢开始门限值（ssthresh）或出现拥塞，慢开始结束。
+
+> During congestion avoidance, cwnd is incremented by 1 full-sized segment per round-trip time (RTT).  Congestion avoidance continues until congestion is detected.
+
+拥塞避免期间，每经过一个往返时间（RTT）就把 cwnd 加 1 个报文段的大小。拥塞避免阶段持续直到检测到网络拥塞。
+
+> When a TCP sender detects segment loss using the retransmission timer, the value of ssthresh MUST be set to no more than the value given in equation:
+> <center>ssthresh = max (FlightSize / 2, 2*SMSS)</center>
+
+当发送方通过重传计时器监测到报文丢失的时候，必须把 ssthresh 设置成不大于 `max (FlightSize / 2, 2*SMSS)` 的值。其中，`FlightSize` 是已经发送未被确认的数据大小。某些实现里面会用 `cwnd` 代替 `FlightSize` 进行计算，这种做法可能导致增加到远大于 rwnd。
+在超时发生时，cwnd 会被重置为至多一个报文段大小，然后重新进入慢开始阶段。
+
+发送方最大报文大小 SMSS：
+> SENDER MAXIMUM SEGMENT SIZE (SMSS):  The SMSS is the size of the largest segment that the sender can transmit. The size does not include the TCP/IP headers and options.
+
+拥塞窗口 cwnd 初始值取值：
+> IW, the initial value of cwnd, MUST be less than or equal to 2*SMSS bytes and MUST NOT be more than 2 segments.
+
+慢开始门限值 ssthresh 初始值取值：
+> The initial value of ssthresh MAY be arbitrarily high (for example, some implementations use the size of the advertised window), but it may be reduced in response to congestion.
+
+
+- 快重传和快恢复
+> A TCP receiver SHOULD send an immediate duplicate ACK when an out- of-order segment arrives.
+
+快重传要求接收者**每收到一个失序的报文段**后就立即发送重复确认。此外，当接收方收到的报文填充了部分或全部失序段时，也要立即发送确认报文。
+
+> After receiving 3 duplicate ACKs, TCP performs a retransmission of what appears to be the missing segment, without waiting for the retransmission timer to expire.
+
+对于发送者，只要**连续收到三个重复确认**，立马重新发送这个似乎已经丢失的报文，而不用等待重传计时器超时。
+
+> After the fast retransmit algorithm sends what appears to be the missing segment, the "fast recovery" algorithm governs the transmission of new data until a non-duplicate ACK arrives.
+
+在快重传处理发送完疑似丢包的报文后，用快恢复算法处理传输过程直至非重复确认到达。
+快恢复算法主要有两个要点，一是用“乘法减小”（即上面提到的 `ssthresh = max (FlightSize / 2, 2*SMSS)`）算法把 ssthresh 收缩，这样可以**预防网络拥塞**。二是由于发送方不会认为当前网络发生拥塞，此时收缩完 ssthresh 后，把 cwnd 设置为 `ssthresh` 或 `ssthresh + 3MSS`，然后开始执行拥塞避免算法（”加法增大“），对于 cwnd 增加的 3MSS 大小应该在接收到新报文的确认后重新扣除。
+
 ### HTTP
 
 #### HTTP 的 Keep-Alive
