@@ -3,7 +3,7 @@ title: 登徒先生的个人博客
 email: ivanlienmi@gmail.com
 description: > # this means to ignore newlines until "baseurl:"
   还没想好这里怎么想...
-baseurl:  /blog # the subpath of your site, e.g. /blog/
+baseurl: # the subpath of your site, e.g. /blog/
 url:  # the base hostname & protocol for your site
 # twitter_username: twitter_username
 github_username:  akmissxt
@@ -15,7 +15,7 @@ highlighter: rouge
 
 # Pagination
 paginate: 15
-paginate_path: "/blog/page:num/"
+paginate_path: "/page:num/"
 
 
 collections:
