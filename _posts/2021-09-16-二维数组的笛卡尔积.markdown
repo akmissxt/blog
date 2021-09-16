@@ -1,0 +1,28 @@
+题目：> 1. 给一个二维数组，输出其所有笛卡尔积组合，例如：[['a', 'b'], ['c', 'd'], ['e']] => ['ace', 'ade', 'bce', 'bde']
+
+
+**解法：**
+利用队列来解决，每轮把当前队列中的元素作为前缀，遍历当前待处理数组进行排列组合。需要注意的是因为队列长度动态变化，所以最内层循环的遍历次数需要先保存下来，而且每次只取 `q[0]` 来进行排列组合（处理完的已经被移除）。
+
+
+```JavaScript
+function solution(arr) {
+    const q = arr[0];
+
+    for (let i = 1; i < arr.length; i++) {
+        const count = q.length; // 记录当前轮需要进行的次数
+
+        for (let k = 0; k < count; k++) { // 取当前队列的元素作为前缀进行排列组合
+            for (let j = 0; j < arr[i].length; j++) {
+                q.push(q[0] + arr[i][j]);
+            }
+            q.shift(); // 一轮结束，把处理完的前缀移除
+        }
+
+    }
+
+    return q;
+}
+```
+
+
